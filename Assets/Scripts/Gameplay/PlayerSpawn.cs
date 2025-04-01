@@ -13,6 +13,7 @@ namespace Platformer.Gameplay
 
         public override void Execute()
         {
+            
             var player = model.player;
             player.collider2d.enabled = true;
             player.controlEnabled = false;

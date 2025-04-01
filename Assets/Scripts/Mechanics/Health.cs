@@ -36,6 +36,7 @@ namespace Platformer.Mechanics
         /// </summary>
         public void Decrement()
         {
+            Debug.LogError("Decrementing HP");
             currentHP = Mathf.Clamp(currentHP - 1, 0, maxHP);
             if (currentHP == 0)
             {
