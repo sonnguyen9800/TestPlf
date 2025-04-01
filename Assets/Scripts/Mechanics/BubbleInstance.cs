@@ -29,7 +29,6 @@ namespace Platformer.Mechanics
 
         void OnPlayerEnter(PlayerController player)
         {
-            Debug.LogError("Collect ballone");
             if (collected) return;
             collected = true;
             _renderer.enabled = false;
