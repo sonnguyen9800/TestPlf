@@ -70,7 +70,7 @@ namespace _Custom
         }
         public int GetCoinValue()
         {
-            var data = GetValue("InitHealth", 30);
+            var data = GetValue("CoinValue", 30);
             return (int)data;
         }
     }
