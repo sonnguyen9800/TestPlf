@@ -99,9 +99,9 @@ namespace Platformer.Mechanics
             base.Update();
         }
 
-        public void ToggleFlying()
+        public void ToggleFlying(bool enable = true)
         {
-            _isFlying = !_isFlying;
+            _isFlying = enable;
             if (_isFlying)
             {
                 spriteRenderer.color = _flyingColor;
