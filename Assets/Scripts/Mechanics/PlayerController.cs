@@ -156,12 +156,14 @@ namespace Platformer.Mechanics
         private void HandleFlying()
         {
             // Handle flying mechanics
-            if (!_allowSpaceAirborne)
-                return;
+
             if (Input.GetButtonUp("Jump"))
             {
+                if (!_allowSpaceAirborne)
+                    return;
                 // Descending
                 velocity.y = -_descendSpeed;
+                
             }
             else
             {
@@ -233,7 +235,6 @@ namespace Platformer.Mechanics
 
         void OnCollisionEnter2D(Collision2D collision)
         {
-            Debug.LogError(collision.gameObject.name);
             if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
                 return;
