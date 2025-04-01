@@ -3,7 +3,11 @@ using Platformer.Model;
 
 namespace Platformer.Gameplay
 {
-    public class PlayerBalloneCollision : Simulation.Event<PlayerBalloneCollision>
+    /// <summary>
+    /// Fired when a player collides with a Bubble.
+    /// </summary>
+    /// <typeparam name="PlayerCollision"></typeparam>
+    public class PlayerBubbleCollision : Simulation.Event<PlayerBubbleCollision>
     {
         PlatformerModel model = Simulation.GetModel<PlatformerModel>();
 

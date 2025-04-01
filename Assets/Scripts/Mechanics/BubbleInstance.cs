@@ -33,7 +33,7 @@ namespace Platformer.Mechanics
             if (collected) return;
             collected = true;
             _renderer.enabled = false;
-            var ev = Schedule<PlayerBalloneCollision>();
+            var ev = Schedule<PlayerBubbleCollision>();
         }
     }
 }
