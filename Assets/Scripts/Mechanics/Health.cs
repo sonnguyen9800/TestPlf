@@ -15,6 +15,10 @@ namespace Platformer.Mechanics
         /// </summary>
         public int maxHP = 1;
 
+        public void SetupMaxHealth(int maxHP)
+        {
+            this.maxHP = maxHP;
+        }
         /// <summary>
         /// Indicates if the entity should be considered 'alive'.
         /// </summary>

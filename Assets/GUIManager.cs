@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using _Custom;
 using Cinemachine;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
@@ -9,7 +11,9 @@ using UnityEngine.UI;
 
 public class GUIManager : MonoSingleton<GUIManager>
 {
-    [SerializeField] private Image[] _hearts;
+    [SerializeField] private HorizontalLayoutGroup _heartLayout = null;
+    [SerializeField] private Image _hearthPrefab = null;
+    private Image[] _hearts;
     [SerializeField] private TextMeshProUGUI _coinValueTMP;
     [SerializeField] private CinemachineImpulseSource _impulseSource;
     
@@ -29,6 +33,18 @@ public class GUIManager : MonoSingleton<GUIManager>
         {
             _colorAdjustments.colorFilter.value = Color.white; // Default color
         }
+    }
+
+    private void Start()
+    {
+        // Instantiate Heart Prefabs
+        int totalHearts = ConfigManager.Instance.GetInitHealth();
+        _hearts = new Image[totalHearts];
+        for (int i = 0; i < totalHearts; i++)
+        {
+            _hearts[i] = Instantiate(_hearthPrefab, _heartLayout.transform);
+        }
+        _hearthPrefab.gameObject.SetActive(false);
     }
 
     public void SetHearth(int heartCount)
