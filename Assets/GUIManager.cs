@@ -74,14 +74,15 @@ public class GUIManager : MonoSingleton<GUIManager>
 
         if (_colorAdjustments != null)
         {
-            StartCoroutine(FlashEffect());
+           FlashEffect();
         }
     }
 
-    private IEnumerator FlashEffect()
+    private void FlashEffect()
     {
-        _colorAdjustments.colorFilter.value = Color.red; // Set red screen tint
-        yield return new WaitForSeconds(_flashDuration);
-        _colorAdjustments.colorFilter.value = Color.white; // Reset back to normal
+        Color initialColor = _colorAdjustments.colorFilter.value;
+        DOTween.To(() => _colorAdjustments.colorFilter.value, x => _colorAdjustments.colorFilter.value = x, Color.red, _flashDuration)
+            .OnComplete(() => DOTween.To(() => _colorAdjustments.colorFilter.value, x => _colorAdjustments.colorFilter.value = x, initialColor, _flashDuration));
     }
+
 }
