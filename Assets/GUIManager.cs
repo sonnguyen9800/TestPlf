@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using _Custom;
 using Cinemachine;
+using DG.Tweening;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -57,8 +58,13 @@ public class GUIManager : MonoSingleton<GUIManager>
 
     public void IncreaseCoinValue(int amount)
     {
-        _coinCount += amount;
+        var final =_coinCount + amount;
         _coinValueTMP.text = _coinCount.ToString();
+        DOTween.To(() => _coinCount, x => 
+        {
+            _coinCount = x;
+            _coinValueTMP.text = x.ToString();
+        }, final, 1f).SetEase(Ease.OutQuad);
     }
 
     public void PlayEffectHurt()
