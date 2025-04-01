@@ -25,7 +25,7 @@ namespace Platformer.Gameplay
                 if (player.audioSource && player.ouchAudio)
                     player.audioSource.PlayOneShot(player.ouchAudio);
                 player.animator.SetTrigger("hurt");
-                
+                GUIManager.Instance.PlayEffectHurt();
                 if (currentHealth == 0)
                 {
                     model.virtualCamera.m_Follow = null;

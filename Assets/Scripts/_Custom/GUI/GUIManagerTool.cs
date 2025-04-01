@@ -13,7 +13,7 @@ public class GUIManagerToolEditor : Editor
         GUIManager myComponent = (GUIManager)target;
 
         // Create a button in the Inspector
-        if (GUILayout.Button("Execute DoSomething"))
+        if (GUILayout.Button("Test Effect Hurt"))
         {
             myComponent.PlayEffectHurt(); // Call the method when clicked
         }
