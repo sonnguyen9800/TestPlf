@@ -5,6 +5,7 @@ using Platformer.Gameplay;
 using static Platformer.Core.Simulation;
 using Platformer.Model;
 using Platformer.Core;
+using UnityEngine.Serialization;
 
 namespace Platformer.Mechanics
 {
@@ -17,6 +18,7 @@ namespace Platformer.Mechanics
         public AudioClip jumpAudio;
         public AudioClip respawnAudio;
         public AudioClip ouchAudio;
+        public AudioClip flyAudio;
 
         /// <summary>
         /// Max horizontal speed of the player.
@@ -27,19 +29,33 @@ namespace Platformer.Mechanics
         /// </summary>
         public float jumpTakeOffSpeed = 7;
 
+
         public JumpState jumpState = JumpState.Grounded;
         private bool stopJump;
         /*internal new*/ public Collider2D collider2d;
         /*internal new*/ public AudioSource audioSource;
         public Health health;
         public bool controlEnabled = true;
+        
 
         bool jump;
         Vector2 move;
         SpriteRenderer spriteRenderer;
         internal Animator animator;
         readonly PlatformerModel model = Simulation.GetModel<PlatformerModel>();
+        
 
+        [Header("Flying Mechanics")]
+        public float FlyAcceleration = 0.5f;
+        public float MaxFlySpeed = 10f;
+        public float DescendSpeed = 8f;
+        public float MaxFlyHeight = 20f;
+        public float MinFlyHeight = -10f;
+        private Color _flyingColor = Color.yellow;
+        private Color _originalColor;
+        public bool _isFlying = false;
+
+        
         public Bounds Bounds => collider2d.bounds;
 
         void Awake()
@@ -49,6 +65,7 @@ namespace Platformer.Mechanics
             collider2d = GetComponent<Collider2D>();
             spriteRenderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<Animator>();
+            _originalColor = spriteRenderer.color;
         }
 
         protected override void Update()
@@ -56,12 +73,22 @@ namespace Platformer.Mechanics
             if (controlEnabled)
             {
                 move.x = Input.GetAxis("Horizontal");
-                if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
-                    jumpState = JumpState.PrepareToJump;
-                else if (Input.GetButtonUp("Jump"))
+                
+                // Quick Test for flying
+                if (Input.GetKeyDown(KeyCode.F))
                 {
-                    stopJump = true;
-                    Schedule<PlayerStopJump>().player = this;
+                    ToggleFlying();
+                }
+
+                if (!_isFlying)
+                {
+                    if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
+                        jumpState = JumpState.PrepareToJump;
+                    else if (Input.GetButtonUp("Jump"))
+                    {
+                        stopJump = true;
+                        Schedule<PlayerStopJump>().player = this;
+                    }
                 }
             }
             else
@@ -72,7 +99,50 @@ namespace Platformer.Mechanics
             base.Update();
         }
 
+        public void ToggleFlying()
+        {
+            _isFlying = !_isFlying;
+            if (_isFlying)
+            {
+                spriteRenderer.color = _flyingColor;
+                if (audioSource && flyAudio)
+                    audioSource.PlayOneShot(flyAudio);
+            }
+            else
+            {
+                spriteRenderer.color = _originalColor;
+                velocity.y = 0;
+            }
+        }
+
         void UpdateJumpState()
+        {
+            if (_isFlying)
+            {
+                HandleFlying();
+            }
+            else
+            {
+                HandleGround();
+            }
+        }
+
+        private void HandleFlying()
+        {
+            // Handle flying mechanics
+            if (Input.GetButtonDown("Jump"))
+            {
+                // Descending
+                velocity.y = -DescendSpeed;
+            }
+            else
+            {
+                // Ascending with acceleration
+                velocity.y = Mathf.Min(velocity.y + FlyAcceleration, MaxFlySpeed);
+            }
+        }
+
+        private void HandleGround()
         {
             jump = false;
             switch (jumpState)
@@ -100,21 +170,24 @@ namespace Platformer.Mechanics
                     jumpState = JumpState.Grounded;
                     break;
             }
+        
         }
-
         protected override void ComputeVelocity()
         {
-            if (jump && IsGrounded)
+            if (!_isFlying)
             {
-                velocity.y = jumpTakeOffSpeed * model.jumpModifier;
-                jump = false;
-            }
-            else if (stopJump)
-            {
-                stopJump = false;
-                if (velocity.y > 0)
+                if (jump && IsGrounded)
                 {
-                    velocity.y = velocity.y * model.jumpDeceleration;
+                    velocity.y = jumpTakeOffSpeed * model.jumpModifier;
+                    jump = false;
+                }
+                else if (stopJump)
+                {
+                    stopJump = false;
+                    if (velocity.y > 0)
+                    {
+                        velocity.y = velocity.y * model.jumpDeceleration;
+                    }
                 }
             }
 
@@ -127,6 +200,17 @@ namespace Platformer.Mechanics
             animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
 
             targetVelocity = move * maxSpeed;
+        }
+
+        void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (_isFlying)
+            {
+                // Return to normal state when hitting obstacles
+                _isFlying = false;
+                spriteRenderer.color = _originalColor;
+                velocity.y = 0;
+            }
         }
 
         public enum JumpState
