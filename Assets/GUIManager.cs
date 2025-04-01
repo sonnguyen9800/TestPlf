@@ -1,17 +1,26 @@
 using System;
 using System.Collections;
 using _Custom;
+using _Custom.Effect;
 using Cinemachine;
 using DG.Tweening;
+using NTC.Pool;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using TMPro;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class GUIManager : MonoSingleton<GUIManager>
 {
+    public enum EffectType
+    {
+        Fly,
+        Hit,
+        TokenClaimed,
+    }
     [SerializeField] private HorizontalLayoutGroup _heartLayout = null;
     [SerializeField] private Image _hearthPrefab = null;
     private Image[] _hearts;
@@ -22,7 +31,9 @@ public class GUIManager : MonoSingleton<GUIManager>
     private ColorAdjustments _colorAdjustments;
 
     [SerializeField] private float _flashDuration = 0.2f; // Flash duration
-
+    [SerializeField] private ObjectPool _hitTextPool = null;
+    [SerializeField] private Canvas _canvasUI;
+    [SerializeField] private Camera _mainCamera;
     private int _coinCount;
 
     private void Awake()
@@ -52,7 +63,18 @@ public class GUIManager : MonoSingleton<GUIManager>
     {
         for (int i = 0; i < _hearts.Length; i++)
         {
-            _hearts[i].enabled = i < heartCount;
+            if (i < heartCount)
+            {
+                _hearts[i].gameObject.SetActive(true);
+                _hearts[i].transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
+                _hearts[i].DOFade(1f, 0.3f);
+            }
+            else
+            {
+                _hearts[i].transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack)
+                    .OnComplete(() => _hearts[i].gameObject.SetActive(false));
+                _hearts[i].DOFade(0f, 0.3f);
+            }
         }
     }
 
@@ -69,7 +91,6 @@ public class GUIManager : MonoSingleton<GUIManager>
 
     public void PlayEffectHurt()
     {
-        Debug.Log("PlayEffectHurt");
         _impulseSource.GenerateImpulse();
 
         if (_colorAdjustments != null)
@@ -83,6 +104,29 @@ public class GUIManager : MonoSingleton<GUIManager>
         Color initialColor = _colorAdjustments.colorFilter.value;
         DOTween.To(() => _colorAdjustments.colorFilter.value, x => _colorAdjustments.colorFilter.value = x, Color.red, _flashDuration)
             .OnComplete(() => DOTween.To(() => _colorAdjustments.colorFilter.value, x => _colorAdjustments.colorFilter.value = x, initialColor, _flashDuration));
+    }
+    private Vector2 ConvertWorldToCanvasPosition(Vector3 worldPosition)
+    {
+        Vector3 screenPosition = _mainCamera.WorldToScreenPoint(worldPosition);
+        // Step 2: Convert screen position to UI (anchoredPosition)
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            _canvasUI.transform as RectTransform, screenPosition, GetComponent<Camera>(), out Vector2 uiPosition);
+        return uiPosition;
+    }
+    public GameObject SpawnText(EffectType type, Vector3 worldPos, bool autoDespawn = true)
+    {
+        var canvasPos = ConvertWorldToCanvasPosition(worldPos);
+        var text = _hitTextPool.GetPrefabByTag(type.ToString());
+        var obj = NightPool.Spawn(text);
+        obj.transform.SetParent(_canvasUI.transform);
+        obj.transform.localPosition = canvasPos;
+            
+        obj.GetComponent<TextMeshProUGUI>();
+            
+        if (autoDespawn)
+            NightPool.Despawn(obj, 1.3f);
+        return obj;
+
     }
 
 }
