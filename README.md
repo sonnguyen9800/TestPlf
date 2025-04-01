@@ -65,7 +65,7 @@ You can hit **"F"** to cheat and trigger fly system without taking bubble item.
 ### 5. Configurable Parameters
 ![alt text](image-2.png)
 - Health and flying speed parameters are adjustable via configuration files located in `Resources/Configs`.
-- In the project, another parameter exposed in the config is **CoinValue**, modify this to make coin retrieved when token claimed.
+- In the project, another parameter exposed in the config is **CoinValue**, update this to modify coin value retrieved when token claimed.
 
 ### Running the Game
 ![alt text](image-3.png)
