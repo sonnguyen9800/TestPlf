@@ -1,3 +1,4 @@
+using System;
 using Platformer.Gameplay;
 using UnityEngine;
 using static Platformer.Core.Simulation;
@@ -23,18 +24,22 @@ namespace Platformer.Mechanics
         void OnTriggerEnter2D(Collider2D other)
         {
             //only exectue OnPlayerEnter if the player collides with this token.
-            var player = other.gameObject.GetComponent<PlayerController>();
-            if (player != null) OnPlayerEnter(player);
+            if (other.gameObject.layer != LayerMask.NameToLayer("Player"))
+            {
+                return;
+            }
+            OnPlayerEnter();
         }
 
-        void OnPlayerEnter(PlayerController player)
+        void OnPlayerEnter()
         {
             if (collected) return;
             collected = true;
             _renderer.enabled = false;
-            var ev = Schedule<PlayerBubbleCollision>();
-            GUIManager.Instance.SpawnText(GUIManager.EffectType.Fly, transform.position);
+           //Schedule<PlayerBubbleCollision>();
+           GUIManager.Instance.SpawnText(GUIManager.EffectType.Fly,  transform.position, transform);
 
         }
+        
     }
 }

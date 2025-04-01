@@ -37,6 +37,8 @@ namespace Platformer.Mechanics
             if (player != null)
             {
                 var ev = Schedule<PlayerEnemyCollision>();
+                GUIManager.Instance.SpawnText(GUIManager.EffectType.Hit,  transform.position, transform);
+
                 ev.player = player;
                 ev.enemy = this;
             }

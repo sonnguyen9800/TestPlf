@@ -13,7 +13,7 @@ namespace Platformer.Gameplay
 
         public override void Execute()
         {
-            
+            GUIManager.Instance.RefreshEffect();
             var player = model.player;
             player.ToggleFlying(false);
             player.ToggleAllowSpaceAirborne();

@@ -6,17 +6,17 @@ using UnityEngine;
 
 public class TapTextEffect : MonoBehaviour , IPoolable
 {
-    private TextMeshProUGUI _textMeshPro = null;
+    private TextMeshPro _textMeshPro = null;
     private void Awake()
     {
-        _textMeshPro = GetComponent<TextMeshProUGUI>();
+        _textMeshPro = GetComponent<TextMeshPro>();
     }
 
     public void OnSpawn()
     {
         _textMeshPro.alpha = 1;
 
-        transform.DOMoveY(transform.position.y + 30, 1.2f);
+        transform.DOLocalMoveY(3, 1.2f);
         _textMeshPro.DOFade(0, 1.2f);
 
 

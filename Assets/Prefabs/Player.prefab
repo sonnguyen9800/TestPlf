@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8509783501685719824}
   - component: {fileID: 6082575806313374961}
   - component: {fileID: 1824045667}
-  m_Layer: 13
+  m_Layer: 8
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -64,10 +64,8 @@ MonoBehaviour:
   audioSource: {fileID: 0}
   health: {fileID: 0}
   controlEnabled: 1
-  FlyAcceleration: 1
-  MaxFlySpeed: 10
-  DescendSpeed: 8
   _isFlying: 0
+  TimeToFly: 0.5
 --- !u!212 &212064061491315838
 SpriteRenderer:
   m_ObjectHideFlags: 0

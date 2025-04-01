@@ -16,6 +16,7 @@ namespace Platformer.Gameplay
             // Make character floating
             var player = model.player;
             player.ToggleFlying();
+            
         }
     }
 }

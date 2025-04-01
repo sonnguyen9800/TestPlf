@@ -5,6 +5,8 @@ using _Custom.Effect;
 using Cinemachine;
 using DG.Tweening;
 using NTC.Pool;
+using Platformer.Core;
+using Platformer.Gameplay;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -12,7 +14,7 @@ using UnityEngine.Rendering.Universal;
 using TMPro;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
-
+using static Platformer.Core.Simulation;
 public class GUIManager : MonoSingleton<GUIManager>
 {
     public enum EffectType
@@ -57,8 +59,20 @@ public class GUIManager : MonoSingleton<GUIManager>
             _hearts[i] = Instantiate(_hearthPrefab, _heartLayout.transform);
         }
         _hearthPrefab.gameObject.SetActive(false);
+        CallEffectOnInit();
     }
 
+    private void CallEffectOnInit()
+    {
+        var text = _hitTextPool.GetPrefabByTag(EffectType.Fly.ToString());
+        
+        
+        var obj = NightPool.Spawn(text);
+        obj.transform.SetParent(transform, worldPositionStays: false);
+        obj.transform.localPosition = Vector3.down*100;
+        Schedule<EmptyEvent>();
+
+    }
     public void SetHearth(int heartCount)
     {
         for (int i = 0; i < _hearts.Length; i++)
@@ -102,34 +116,31 @@ public class GUIManager : MonoSingleton<GUIManager>
     private void FlashEffect()
     {
         Color initialColor = _colorAdjustments.colorFilter.value;
-        DOTween.To(() => _colorAdjustments.colorFilter.value, x => _colorAdjustments.colorFilter.value = x, Color.red, _flashDuration)
+        DOTween.To(() => _colorAdjustments.colorFilter.value, 
+                x => _colorAdjustments.colorFilter.value = x, Color.red, _flashDuration)
             .OnComplete(() => DOTween.To(() => _colorAdjustments.colorFilter.value, x => _colorAdjustments.colorFilter.value = x, initialColor, _flashDuration));
     }
-    private Vector2 ConvertWorldToCanvasPosition(Vector3 worldPosition)
+
+    public void RefreshEffect()
     {
-        Vector3 screenPosition = _mainCamera.WorldToScreenPoint(worldPosition);
-        // Step 2: Convert screen position to UI (anchoredPosition)
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            _canvasUI.transform as RectTransform, screenPosition, GetComponent<Camera>(), out Vector2 uiPosition);
-        return uiPosition;
+        if (_colorAdjustments != null)
+        {
+            _colorAdjustments.colorFilter.value = Color.white;
+        }
     }
-    public GameObject SpawnText(EffectType type, Vector3 worldPos, bool autoDespawn = true)
+    public GameObject SpawnText(EffectType type, Vector3 worldPos, Transform parent, bool autoDespawn = true)
     {
-        Debug.LogError(type.ToString());
         var text = _hitTextPool.GetPrefabByTag(type.ToString());
         if (text == null)
         {
             Debug.LogError("Text is null" + type.ToString());
             return null;
         }
-
-        return null;
+        
         var obj = NightPool.Spawn(text);
-
-        obj.transform.position = worldPos;
-            
-        obj.GetComponent<TextMeshProUGUI>();
-            
+        obj.transform.SetParent(parent, worldPositionStays: false);
+        obj.transform.localPosition = Vector3.zero;
+        
         if (autoDespawn)
             NightPool.Despawn(obj, 1.3f);
         return obj;
