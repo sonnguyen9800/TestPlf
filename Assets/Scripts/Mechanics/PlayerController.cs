@@ -49,8 +49,6 @@ namespace Platformer.Mechanics
         public float FlyAcceleration = 0.5f;
         public float MaxFlySpeed = 10f;
         public float DescendSpeed = 8f;
-        public float MaxFlyHeight = 20f;
-        public float MinFlyHeight = -10f;
         private Color _flyingColor = Color.yellow;
         private Color _originalColor;
         public bool _isFlying = false;
@@ -104,6 +102,7 @@ namespace Platformer.Mechanics
             _isFlying = enable;
             if (_isFlying)
             {
+                velocity.y = 0;
                 spriteRenderer.color = _flyingColor;
                 if (audioSource && flyAudio)
                     audioSource.PlayOneShot(flyAudio);
@@ -130,7 +129,7 @@ namespace Platformer.Mechanics
         private void HandleFlying()
         {
             // Handle flying mechanics
-            if (Input.GetButtonDown("Jump"))
+            if (Input.GetButtonUp("Jump"))
             {
                 // Descending
                 velocity.y = -DescendSpeed;
@@ -204,13 +203,18 @@ namespace Platformer.Mechanics
 
         void OnCollisionEnter2D(Collision2D collision)
         {
-            if (_isFlying)
+            if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            {
+                return;
+            }
+            if (collision.gameObject.layer == LayerMask.NameToLayer("Ground") && _isFlying)
             {
                 // Return to normal state when hitting obstacles
                 _isFlying = false;
                 spriteRenderer.color = _originalColor;
                 velocity.y = 0;
             }
+ 
         }
 
         public enum JumpState
