@@ -27,6 +27,10 @@ This project is an enhanced version of the Platformer Microgame template from Un
 2. Click on **Add** and select **Add Project from Disk**.
 3. Navigate to the cloned project directory and open it.
 4. Unity will load the project (this may take some time).
+5. Open the Scene by visit *Test* -> *Open Test Scene*
+![alt text](image-3.png)
+
+Or manually find the scene at  `Assets/Scenes/SampleScene.unity`
 
 ## Features
 ![alt text](image.png)
@@ -64,7 +68,9 @@ You can hit **"F"** to cheat and trigger fly system without taking bubble item.
 - In the project, another parameter exposed in the config is **CoinValue**, modify this to make coin retrieved when token claimed.
 
 ### Running the Game
-1. Open the main scene:  `Assets/Scenes/SampleScene.unity`
+![alt text](image-3.png)
+
+1. Open the main scene:  `Assets/Scenes/SampleScene.unity` or Open the Scene by visit *Test* -> *Open Test Scene*
 2. Click the **Play** button in Unity Editor.
 3. Move the character, collect coins, avoid enemies, and test the special Bubble Item mechanic.
 
@@ -72,8 +78,8 @@ You can hit **"F"** to cheat and trigger fly system without taking bubble item.
 ## Third-Party Assets
 - **Platformer Microgame** (Unity Asset Store)
 - Additional UI icons for Health Icon, also for Bubble Sprite
-- Dotween for animation
-- Font *Musician* and font *Musicals*
+- Dotween for animation, effect feedback.
+- Font *Musician* and font *Musicals*.
 
 ## Packages in Use
 - **TextMeshPro** (for advanced UI rendering)
