@@ -7,7 +7,8 @@ namespace _Custom
 {
     public class ConfigManager : MonoSingleton<ConfigManager>
     {
-        private Dictionary<string, int> configValues = new Dictionary<string, int>();
+        private Dictionary<string, float> configValues = new();
+        //Config Path: GameConfig.csv
         private const string CONFIG_PATH = "Configs/GameConfig";
 
         protected override void Awake()
@@ -40,9 +41,9 @@ namespace _Custom
             }
         }
 
-        public int GetValue(string key, int defaultValue = 0)
+        public float GetValue(string key, float defaultValue = 0)
         {
-            return configValues.TryGetValue(key, out int value) ? value : defaultValue;
+            return configValues.TryGetValue(key, out float value) ? value : defaultValue;
         }
 
         public int GetCoinPoint()
@@ -53,12 +54,24 @@ namespace _Custom
         // Convenience methods for specific config values
         public int GetInitHealth()
         {
-            return GetValue("InitHealth", 100);
+            var data = GetValue("InitHealth", 3);
+            return (int)data;
+        }
+        
+        public float GetFlyAcceleration()
+        {
+            return GetValue("AscendSpeed", 0.5f);
+
         }
 
-        public int GetAscendSpeed()
+        public float GetMaxFlySpeed()
         {
-            return GetValue("AscendSpeed", 5);
+            return GetValue("MaxFlySpeed", 10);
+        }
+
+        public float GetDescendSpeed()
+        {
+            return GetValue("DescentSpeed", 8);
         }
     }
 }

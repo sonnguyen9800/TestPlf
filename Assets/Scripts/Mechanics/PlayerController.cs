@@ -6,6 +6,7 @@ using Platformer.Gameplay;
 using static Platformer.Core.Simulation;
 using Platformer.Model;
 using Platformer.Core;
+using Unity.VisualScripting;
 using UnityEngine.Serialization;
 
 namespace Platformer.Mechanics
@@ -47,9 +48,9 @@ namespace Platformer.Mechanics
         
 
         [Header("Flying Mechanics")]
-        public float FlyAcceleration = 0.5f;
-        public float MaxFlySpeed = 10f;
-        public float DescendSpeed = 8f;
+        private float _flyAcceleration = 0.5f;
+        private float _maxFlySpeed = 10f;
+        private float _descendSpeed = 8f;
         private Color _flyingColor = Color.yellow;
         private Color _originalColor;
         public bool _isFlying = false;
@@ -60,7 +61,6 @@ namespace Platformer.Mechanics
         void Awake()
         {
             health = GetComponent<Health>();
-            health.SetupMaxHealth(ConfigManager.Instance.GetInitHealth());
             audioSource = GetComponent<AudioSource>();
             collider2d = GetComponent<Collider2D>();
             spriteRenderer = GetComponent<SpriteRenderer>();
@@ -68,6 +68,16 @@ namespace Platformer.Mechanics
             _originalColor = spriteRenderer.color;
         }
 
+        protected override void Start()
+        {
+            base.Start();
+            
+            health.SetupMaxHealth(ConfigManager.Instance.GetInitHealth());
+            _flyAcceleration = ConfigManager.Instance.GetFlyAcceleration();
+            _maxFlySpeed = ConfigManager.Instance.GetMaxFlySpeed();
+            _descendSpeed = ConfigManager.Instance.GetDescendSpeed();
+        }
+        
         protected override void Update()
         {
             if (controlEnabled)
@@ -134,12 +144,12 @@ namespace Platformer.Mechanics
             if (Input.GetButtonUp("Jump"))
             {
                 // Descending
-                velocity.y = -DescendSpeed;
+                velocity.y = -_descendSpeed;
             }
             else
             {
                 // Ascending with acceleration
-                velocity.y = Mathf.Min(velocity.y + FlyAcceleration, MaxFlySpeed);
+                velocity.y = Mathf.Min(velocity.y + _flyAcceleration, _maxFlySpeed);
             }
         }
 
