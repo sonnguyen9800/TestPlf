@@ -1,22 +1,36 @@
-using System;
+using System.Collections;
 using Cinemachine;
 using UnityCommunity.UnitySingleton;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+using TMPro;
 using UnityEngine.UI;
 
 public class GUIManager : MonoSingleton<GUIManager>
 {
     [SerializeField] private Image[] _hearts;
-    [SerializeField] private TMPro.TextMeshProUGUI _coinValueTMP;
-
+    [SerializeField] private TextMeshProUGUI _coinValueTMP;
     [SerializeField] private CinemachineImpulseSource _impulseSource;
+    
+    [SerializeField] private Volume _postProcessVolume; // Reference to Post-Processing Volume
+    private ColorAdjustments _colorAdjustments;
+
+    [SerializeField] private float _flashDuration = 0.2f; // Flash duration
+
     private int _coinCount;
+
     private void Awake()
     {
         _coinValueTMP.text = string.Empty;
+
+        // Get the Color Adjustments effect from the Post-Processing Volume
+        if (_postProcessVolume.profile.TryGet(out _colorAdjustments))
+        {
+            _colorAdjustments.colorFilter.value = Color.white; // Default color
+        }
     }
-    
+
     public void SetHearth(int heartCount)
     {
         for (int i = 0; i < _hearts.Length; i++)
@@ -35,5 +49,17 @@ public class GUIManager : MonoSingleton<GUIManager>
     {
         Debug.Log("PlayEffectHurt");
         _impulseSource.GenerateImpulse();
+
+        if (_colorAdjustments != null)
+        {
+            StartCoroutine(FlashEffect());
+        }
+    }
+
+    private IEnumerator FlashEffect()
+    {
+        _colorAdjustments.colorFilter.value = Color.red; // Set red screen tint
+        yield return new WaitForSeconds(_flashDuration);
+        _colorAdjustments.colorFilter.value = Color.white; // Reset back to normal
     }
 }
