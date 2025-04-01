@@ -64,6 +64,8 @@ namespace Platformer.Mechanics
         [SerializeField]
         private bool _allowSpaceAirborne = true;
 
+        [SerializeField]
+        private bool _isHoldingSpace = false;
         public Bounds Bounds => collider2d.bounds;
 
         void Awake()
@@ -91,7 +93,15 @@ namespace Platformer.Mechanics
             if (controlEnabled)
             {
                 move.x = Input.GetAxis("Horizontal");
-                
+
+                if (Input.GetKey(KeyCode.Space))
+                {
+                    _isHoldingSpace = true;
+                }
+                else
+                {
+                    _isHoldingSpace = false;
+                }
                 // Quick Test for flying
                 if (Input.GetKeyDown(KeyCode.F))
                 {
@@ -161,7 +171,7 @@ namespace Platformer.Mechanics
         {
             // Handle flying mechanics
 
-            if (Input.GetButtonUp("Jump"))
+            if (_isHoldingSpace)
             {
                 if (_allowSpaceAirborne)
                 {
