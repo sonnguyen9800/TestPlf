@@ -45,12 +45,12 @@ namespace Platformer.Mechanics
         SpriteRenderer spriteRenderer;
         internal Animator animator;
         readonly PlatformerModel model = Simulation.GetModel<PlatformerModel>();
-        
 
-        [Header("Flying Mechanics")]
-        private float _flyAcceleration = 0.5f;
-        private float _maxFlySpeed = 10f;
-        private float _descendSpeed = 8f;
+
+        [Header("Flying Mechanics")] 
+        private float _flyAcceleration;
+        private float _maxFlySpeed;
+        private float _descendSpeed;
         private Color _flyingColor = Color.yellow;
         private Color _originalColor;
         public bool _isFlying = false;
