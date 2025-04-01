@@ -7,7 +7,7 @@ namespace Platformer.Gameplay
     {
         public override void Execute()
         {
-            Debug.LogError("Empty Event");
+            
         }
     }
 }
