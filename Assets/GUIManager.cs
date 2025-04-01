@@ -38,7 +38,7 @@ public class GUIManager : MonoSingleton<GUIManager>
 
     private void Awake()
     {
-        _coinValueTMP.text = string.Empty;
+        _coinValueTMP.text = _coinCount.ToString();
 
         // Get the Color Adjustments effect from the Post-Processing Volume
         if (_postProcessVolume.profile.TryGet(out _colorAdjustments))
@@ -115,11 +115,18 @@ public class GUIManager : MonoSingleton<GUIManager>
     }
     public GameObject SpawnText(EffectType type, Vector3 worldPos, bool autoDespawn = true)
     {
-        var canvasPos = ConvertWorldToCanvasPosition(worldPos);
+        Debug.LogError(type.ToString());
         var text = _hitTextPool.GetPrefabByTag(type.ToString());
+        if (text == null)
+        {
+            Debug.LogError("Text is null" + type.ToString());
+            return null;
+        }
+
+        return null;
         var obj = NightPool.Spawn(text);
-        obj.transform.SetParent(_canvasUI.transform);
-        obj.transform.localPosition = canvasPos;
+
+        obj.transform.position = worldPos;
             
         obj.GetComponent<TextMeshProUGUI>();
             

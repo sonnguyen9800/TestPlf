@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using _Custom;
+using DG.Tweening;
 using UnityEngine;
 using Platformer.Gameplay;
 using static Platformer.Core.Simulation;
@@ -54,8 +55,11 @@ namespace Platformer.Mechanics
         private Color _flyingColor = Color.yellow;
         private Color _originalColor;
         public bool _isFlying = false;
-
         
+        [SerializeField] private float TimeToFly = 0.5f;
+        private bool _flyUnstopable = false;
+        private bool _allowSpaceAirborne = false;
+
         public Bounds Bounds => collider2d.bounds;
 
         void Awake()
@@ -115,17 +119,28 @@ namespace Platformer.Mechanics
             if (_isFlying)
             {
                 velocity.y = 0;
-                spriteRenderer.color = _flyingColor;
+                spriteRenderer.DOColor(_flyingColor, 0.1f);
                 if (audioSource && flyAudio)
                     audioSource.PlayOneShot(flyAudio);
+                StartCoroutine(WaitAndCallFunction());
             }
             else
             {
-                spriteRenderer.color = _originalColor;
+                spriteRenderer.DOColor(_originalColor, 0.1f);
                 velocity.y = 0;
             }
         }
+        IEnumerator WaitAndCallFunction()
+        {
+            _flyUnstopable = true;
+            yield return new WaitForSeconds(TimeToFly);
+            _flyUnstopable = false;
 
+        }
+        public void ToggleAllowSpaceAirborne(bool enable = true)
+        {
+            _allowSpaceAirborne = enable;
+        }
         void UpdateJumpState()
         {
             if (_isFlying)
@@ -141,6 +156,8 @@ namespace Platformer.Mechanics
         private void HandleFlying()
         {
             // Handle flying mechanics
+            if (!_allowSpaceAirborne)
+                return;
             if (Input.GetButtonUp("Jump"))
             {
                 // Descending
@@ -151,6 +168,7 @@ namespace Platformer.Mechanics
                 // Ascending with acceleration
                 velocity.y = Mathf.Min(velocity.y + _flyAcceleration, _maxFlySpeed);
             }
+            
         }
 
         private void HandleGround()
@@ -215,17 +233,21 @@ namespace Platformer.Mechanics
 
         void OnCollisionEnter2D(Collision2D collision)
         {
+            Debug.LogError(collision.gameObject.name);
             if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
                 return;
             }
-            if (collision.gameObject.layer == LayerMask.NameToLayer("Ground") && _isFlying)
-            {
-                // Return to normal state when hitting obstacles
-                _isFlying = false;
-                spriteRenderer.color = _originalColor;
-                velocity.y = 0;
-            }
+            if (_flyUnstopable)
+                return;
+            if (!_isFlying)
+                return;
+            if ( collision.gameObject.layer != LayerMask.NameToLayer("Ground"))
+                return;
+            // Return to normal state when hitting obstacles
+            _isFlying = false;
+            spriteRenderer.DOColor(_originalColor, 0.1f);
+            velocity.y = 0;
  
         }
 

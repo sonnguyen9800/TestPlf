@@ -33,6 +33,8 @@ namespace Platformer.Mechanics
             collected = true;
             _renderer.enabled = false;
             var ev = Schedule<PlayerBubbleCollision>();
+            GUIManager.Instance.SpawnText(GUIManager.EffectType.Fly, transform.position);
+
         }
     }
 }

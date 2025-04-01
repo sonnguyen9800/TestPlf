@@ -22,6 +22,7 @@ namespace Platformer.Gameplay
             var coinValue = ConfigManager.Instance.GetCoinValue();
             GUIManager.Instance.IncreaseCoinValue(coinValue);
             AudioSource.PlayClipAtPoint(token.tokenCollectAudio, token.transform.position);
+            
         }
     }
 }

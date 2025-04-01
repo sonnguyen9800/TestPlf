@@ -57,6 +57,8 @@ namespace Platformer.Mechanics
             var ev = Schedule<PlayerTokenCollision>();
             ev.token = this;
             ev.player = player;
+            GUIManager.Instance.SpawnText(GUIManager.EffectType.TokenClaimed, transform.position);
+
         }
     }
 }
