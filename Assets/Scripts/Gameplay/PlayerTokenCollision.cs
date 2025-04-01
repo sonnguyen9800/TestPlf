@@ -19,7 +19,7 @@ namespace Platformer.Gameplay
 
         public override void Execute()
         {
-            var coinValue = ConfigManager.Instance.GetCoinPoint();
+            var coinValue = ConfigManager.Instance.GetCoinValue();
             GUIManager.Instance.IncreaseCoinValue(coinValue);
             AudioSource.PlayClipAtPoint(token.tokenCollectAudio, token.transform.position);
         }

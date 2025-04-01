@@ -46,11 +46,6 @@ namespace _Custom
             return configValues.TryGetValue(key, out float value) ? value : defaultValue;
         }
 
-        public int GetCoinPoint()
-        {
-            return 50;
-        }
-
         // Convenience methods for specific config values
         public int GetInitHealth()
         {
@@ -72,6 +67,11 @@ namespace _Custom
         public float GetDescendSpeed()
         {
             return GetValue("DescentSpeed", 8);
+        }
+        public int GetCoinValue()
+        {
+            var data = GetValue("InitHealth", 30);
+            return (int)data;
         }
     }
 }

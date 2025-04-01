@@ -1,2 +1,2 @@
-InitHealth,AscendSpeed,MaxFlySpeed,DescentSpeed
-5,0.5,10,8 
+InitHealth,AscendSpeed,MaxFlySpeed,DescentSpeed,CoinValue
+5,1.5,10,8,10 
