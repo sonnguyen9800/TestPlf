@@ -23,7 +23,6 @@ namespace Platformer.Mechanics
         }
         void OnTriggerEnter2D(Collider2D other)
         {
-            //only exectue OnPlayerEnter if the player collides with this token.
             if (other.gameObject.layer != LayerMask.NameToLayer("Player"))
             {
                 return;
@@ -36,7 +35,7 @@ namespace Platformer.Mechanics
             if (collected) return;
             collected = true;
             _renderer.enabled = false;
-           //Schedule<PlayerBubbleCollision>();
+           Schedule<PlayerBubbleCollision>();
            GUIManager.Instance.SpawnText(GUIManager.EffectType.Fly,  transform.position, transform);
 
         }
