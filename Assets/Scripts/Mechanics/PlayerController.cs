@@ -49,8 +49,11 @@ namespace Platformer.Mechanics
 
 
         [Header("Flying Mechanics")] 
+        [SerializeField]
         private float _flyAcceleration;
+        [SerializeField]
         private float _maxFlySpeed;
+        [SerializeField]
         private float _descendSpeed;
         private Color _flyingColor = Color.yellow;
         private Color _originalColor;
@@ -58,7 +61,8 @@ namespace Platformer.Mechanics
         
         [SerializeField] private float TimeToFly = 0.5f;
         private bool _flyUnstopable = false;
-        private bool _allowSpaceAirborne = false;
+        [SerializeField]
+        private bool _allowSpaceAirborne = true;
 
         public Bounds Bounds => collider2d.bounds;
 
@@ -159,10 +163,11 @@ namespace Platformer.Mechanics
 
             if (Input.GetButtonUp("Jump"))
             {
-                if (!_allowSpaceAirborne)
-                    return;
-                // Descending
-                velocity.y = -_descendSpeed;
+                if (_allowSpaceAirborne)
+                {
+                    velocity.y = -_descendSpeed;
+
+                }
                 
             }
             else

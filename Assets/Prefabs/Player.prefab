@@ -65,7 +65,8 @@ MonoBehaviour:
   health: {fileID: 0}
   controlEnabled: 1
   _isFlying: 0
-  TimeToFly: 0.5
+  TimeToFly: 0.2
+  _allowSpaceAirborne: 1
 --- !u!212 &212064061491315838
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -16,7 +16,7 @@ namespace Platformer.Gameplay
             GUIManager.Instance.RefreshEffect();
             var player = model.player;
             player.ToggleFlying(false);
-            player.ToggleAllowSpaceAirborne();
+            player.ToggleAllowSpaceAirborne(true);
             player.collider2d.enabled = true;
             player.controlEnabled = false;
             if (player.audioSource && player.respawnAudio)
