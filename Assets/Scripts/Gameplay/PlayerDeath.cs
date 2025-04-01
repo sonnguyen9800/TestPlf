@@ -20,18 +20,32 @@ namespace Platformer.Gameplay
             if (player.health.IsAlive)
             {
                 
-                player.health.Decrement();
+                var currentHealth = player.health.Decrement();
                 
-                model.virtualCamera.m_Follow = null;
-                model.virtualCamera.m_LookAt = null;
-                // player.collider.enabled = false;
-                player.controlEnabled = false;
-
                 if (player.audioSource && player.ouchAudio)
                     player.audioSource.PlayOneShot(player.ouchAudio);
                 player.animator.SetTrigger("hurt");
+                
+                if (currentHealth == 0)
+                {
+                    model.virtualCamera.m_Follow = null;
+                    model.virtualCamera.m_LookAt = null;
+                    player.animator.SetBool("dead", true);
+                    Simulation.Schedule<PlayerSpawn>(2);
+                    player.controlEnabled = false;
+
+                }
+                GUIManager.Instance.SetHearth(currentHealth);
+
+            }
+            else
+            {
+                model.virtualCamera.m_Follow = null;
+                model.virtualCamera.m_LookAt = null;
                 player.animator.SetBool("dead", true);
                 Simulation.Schedule<PlayerSpawn>(2);
+                player.controlEnabled = false;
+                GUIManager.Instance.SetHearth(0);
             }
         }
     }

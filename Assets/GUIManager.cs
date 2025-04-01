@@ -1,9 +1,10 @@
 using System;
+using UnityCommunity.UnitySingleton;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class GUIManager : MonoBehaviour
+public class GUIManager : MonoSingleton<GUIManager>
 {
     [SerializeField] private Image[] _hearts;
     [SerializeField] private TMPro.TextMeshProUGUI _coinValueTMP;

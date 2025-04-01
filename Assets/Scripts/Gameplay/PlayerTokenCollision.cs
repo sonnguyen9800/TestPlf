@@ -1,3 +1,4 @@
+using _Custom;
 using Platformer.Core;
 using Platformer.Mechanics;
 using Platformer.Model;
@@ -18,6 +19,8 @@ namespace Platformer.Gameplay
 
         public override void Execute()
         {
+            var coinValue = ConfigManager.Instance.GetCoinPoint();
+            GUIManager.Instance.IncreaseCoinValue(coinValue);
             AudioSource.PlayClipAtPoint(token.tokenCollectAudio, token.transform.position);
         }
     }
